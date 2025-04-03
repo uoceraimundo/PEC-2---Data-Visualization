@@ -1,0 +1,62 @@
+---
+title: "Técnica grupo 2 - Matrix plot"
+author: "Enrique Raimundo Escarcena"
+date: '`r format(Sys.Date(),"%e de %B, %Y")`'
+output:
+  html_document:
+    toc: yes
+  pdf_document:
+    toc: yes
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+
+# 2 Matrix plot.
+
+Se crea una gráfica matricial que recoge la relación entre las variables SH,
+(horas de sueño), SQ (Calidad de sueño) y Stress (Estrés).
+
+En la parte superior de la diagonal encontraremos los coeficientes de correlación
+de Paerson. En la diagonal los gráficos de densidad y en la parte inferior los gráficos
+de dispersión.
+
+
+```{r}
+library(readxl)
+
+#El path es solo el nombre del archivo, ya que se encuentra en la misma carpeta
+file_path <- "Sleephealth.xlsx"
+df <- read_excel(file_path)
+
+# Cargar las bibliotecas necesarias
+library(ggplot2)
+library(GGally)
+library(readxl)
+
+# Seleccionar las columnas de interés
+variables <- df[, c("SH", "SQ", "Stress")]
+
+# Calcular la matriz de correlación de Pearson
+cor_matrix <- cor(variables, method = "pearson")
+
+# Mostrar la matriz de correlación
+print("Matriz de Correlación de Pearson:")
+print(cor_matrix)
+
+# Crear el matrix plot (gráfico de pares)
+ggpairs(variables,
+        title = "Matrix Plot: SH, SQ y Stress",
+        upper = list(continuous = wrap("cor", method = "pearson")),
+        lower = list(continuous = wrap("points", alpha = 0.5, size = 1.5)),
+        diag = list(continuous = wrap("densityDiag", fill = "lightblue")))
+
+```
+
